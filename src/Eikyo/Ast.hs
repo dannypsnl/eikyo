@@ -3,6 +3,7 @@ module Eikyo.Ast (
   TopDecl(..),
   Constructor(..),
   Field(..),
+  Type(..),
 ) where
 import Data.Text
 
@@ -23,5 +24,11 @@ data Constructor = Constructor
 
 data Field = Field
   { name :: Text
-  , ty :: Text
+  , ty :: Type
   } deriving (Show, Eq)
+
+data Type =
+    TyConst Text
+  | TyFun [Type] Type
+  | TyTuple [Type]
+  deriving (Show, Eq)

@@ -14,6 +14,9 @@ someFunc = do
     parseTest pDataType "type bool\n\
                         \  true\n\
                         \  false"
-    parseTest pDataType "type list\n\
+    parseTest pDataType "type nat\n\
+                        \  zero\n\
+                        \  suc{n : nat}"
+    parseTest pDataType "type list[a]\n\
                         \  nil\n\
-                        \  cons{head : int, tail : list}"
+                        \  cons{head : a, tail : list[a]}"

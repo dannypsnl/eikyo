@@ -49,8 +49,13 @@ pField :: Parser Field
 pField = do
     name <- identifier
     void (symbol ":")
-    ty <- identifier
-    return Field {..}
+    ty <- pType
+    return Field{..}
+
+pType :: Parser Type
+pType = do
+    name <- identifier
+    return (TyConst name)
 
 -- Tokens
 lineComment :: Parser ()
