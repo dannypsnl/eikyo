@@ -5,4 +5,8 @@ import Text.Megaparsec hiding (State)
 import Eikyo.Parser
 
 someFunc :: IO ()
-someFunc = parseTest pDataType "type foo"
+someFunc = do
+    parseTest pDataType "type bool\n\
+                        \  true\n\
+                        \  false"
+    -- parseTest identifier "  true"
