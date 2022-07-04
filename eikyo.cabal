@@ -25,6 +25,8 @@ source-repository head
 
 library
   exposed-modules:
+      Eikyo.Ast
+      Eikyo.Parser
       Lib
   other-modules:
       Paths_eikyo
