@@ -6,7 +6,11 @@ import Eikyo.Parser
 
 someFunc :: IO ()
 someFunc = do
+    parseTest pModule "module data\n\
+                      \\n\
+                      \type bool\n\
+                      \  true\n\
+                      \  false"
     parseTest pDataType "type bool\n\
                         \  true\n\
                         \  false"
-    -- parseTest identifier "  true"

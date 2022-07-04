@@ -1,7 +1,7 @@
 {-# LANGUAGE TupleSections #-}
 module Eikyo.Parser (
+    pModule,
     pDataType,
-    identifier
 ) where
 import Control.Monad
 import Text.Megaparsec hiding (State)
@@ -14,7 +14,17 @@ import Eikyo.Ast
 
 type Parser = Parsec Void Text
 
-pDataType :: Parser DataType
+pModule :: Parser Module
+pModule = do
+    void (symbol "module")
+    name <- identifier
+    decls <- many pDecl
+    return Module{..}
+
+pDecl :: Parser TopDecl
+pDecl = lexeme pDataType
+
+pDataType :: Parser TopDecl
 pDataType = L.indentBlock scn indentedBlock
   where
     indentedBlock = do
