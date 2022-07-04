@@ -36,7 +36,21 @@ pDataType = L.indentBlock scn indentedBlock
 pConstructor :: Parser Constructor
 pConstructor = do
     name <- identifier
+    fields <- optional pFields
     return Constructor {..}
+
+pFields :: Parser [Field]
+pFields = do
+    void (symbol "{")
+    fields <- sepBy1 pField (symbol ",")
+    void (symbol "}")
+    return fields
+pField :: Parser Field
+pField = do
+    name <- identifier
+    void (symbol ":")
+    ty <- identifier
+    return Field {..}
 
 -- Tokens
 lineComment :: Parser ()

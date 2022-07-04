@@ -14,3 +14,6 @@ someFunc = do
     parseTest pDataType "type bool\n\
                         \  true\n\
                         \  false"
+    parseTest pDataType "type list\n\
+                        \  nil\n\
+                        \  cons{head : int, tail : list}"
