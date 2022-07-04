@@ -32,6 +32,11 @@ library
       Paths_eikyo
   hs-source-dirs:
       src
+  default-extensions:
+      DuplicateRecordFields
+      NamedFieldPuns
+      RecordWildCards
+      OverloadedStrings
   build-depends:
       base >=4.7 && <5
     , megaparsec >=9.2

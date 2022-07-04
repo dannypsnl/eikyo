@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 module Eikyo.Parser (
     pDataType
 ) where

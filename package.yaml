@@ -26,6 +26,11 @@ dependencies:
 
 library:
   source-dirs: src
+  default-extensions:
+    - DuplicateRecordFields
+    - NamedFieldPuns
+    - RecordWildCards
+    - OverloadedStrings
 
 executables:
   eikyo-exe:

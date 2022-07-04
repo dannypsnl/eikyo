@@ -1,4 +1,3 @@
-{-# LANGUAGE DuplicateRecordFields #-}
 module Eikyo.Ast (
   DataType(..),
   Constructor(..),
