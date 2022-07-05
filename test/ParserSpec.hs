@@ -12,6 +12,18 @@ spec = describe "parse top level" $ do
     it "empty one" $ do
       let input = [str|module hello|]
       parse pModule "" `shouldSucceedOn` input
+    it "with some declarations" $ do
+      let input =
+            [str|module hello
+            
+            type Bool
+              true
+              false
+            
+            struct Nice
+              try : Bool
+            |]
+      parse pModule "" `shouldSucceedOn` input
   context "structure" $ do
     it "Person" $ do
       let input =
