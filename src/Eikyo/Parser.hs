@@ -3,6 +3,7 @@
 module Eikyo.Parser
   ( pModule,
     pDataType,
+    pStruct,
   )
 where
 
@@ -25,7 +26,18 @@ pModule = do
   return Module {..}
 
 pDecl :: Parser TopDecl
-pDecl = lexeme pDataType
+pDecl = lexeme $ (try pDataType <|> try pStruct)
+
+pStruct :: Parser TopDecl
+pStruct = L.indentBlock scn indentedBlock
+  where
+    indentedBlock = do
+      void (symbol "struct")
+      name <- identifier
+      type_vars <- concat <$> optional (brackets (sepBy1 pType (symbol ",")))
+      return (L.IndentMany Nothing (return . (toDataType name type_vars)) pField)
+    toDataType name type_vars fields =
+      DataType {constructors = [Constructor {..}], ..}
 
 pDataType :: Parser TopDecl
 pDataType = L.indentBlock scn indentedBlock

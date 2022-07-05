@@ -12,24 +12,35 @@ spec = describe "parse top level" $ do
     it "empty one" $ do
       let input = [str|module hello|]
       parse pModule "" `shouldSucceedOn` input
+  context "structure" $ do
+    it "Person" $ do
+      let input =
+            [str|struct Person
+                   name: String
+                   age: Int
+            |]
+      parse pStruct "" `shouldSucceedOn` input
   context "data type" $ do
     it "Bool" $ do
       let input =
             [str|type Bool
                    true
-                   false|]
+                   false
+            |]
       parse pDataType "" `shouldSucceedOn` input
     it "Nat" $ do
       let input =
             [str|type Nat
                    zero
-                   succ{n : Nat}|]
+                   succ{n : Nat}
+            |]
       parse pDataType "" `shouldSucceedOn` input
     it "List" $ do
       let input =
             [str|type List[a]
                    nil
-                   cons{head : a, tail : List[a]}|]
+                   cons{head : a, tail : List[a]}
+            |]
       parse pDataType "" input
         `shouldParse` ( DataType
                           { name = "List",
