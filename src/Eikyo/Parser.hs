@@ -36,7 +36,7 @@ pDataType = L.indentBlock scn indentedBlock
 pConstructor :: Parser Constructor
 pConstructor = do
     name <- identifier
-    fields <- optional pFields
+    fields <- concat <$> optional pFields
     return Constructor {..}
 
 pFields :: Parser [Field]

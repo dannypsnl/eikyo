@@ -19,7 +19,7 @@ data TopDecl = DataType
 
 data Constructor = Constructor
   { name :: Text
-  , fields :: Maybe [Field]
+  , fields :: [Field]
   } deriving (Show, Eq)
 
 data Field = Field
