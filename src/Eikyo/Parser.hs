@@ -1,25 +1,28 @@
 {-# LANGUAGE TupleSections #-}
-module Eikyo.Parser (
-    pModule,
+
+module Eikyo.Parser
+  ( pModule,
     pDataType,
-) where
+  )
+where
+
 import Control.Monad
+import Data.Text (Text)
+import qualified Data.Text as T
+import Data.Void
+import Eikyo.Ast
 import Text.Megaparsec hiding (State)
 import Text.Megaparsec.Char
-import Data.Text (Text)
-import Data.Void
-import qualified Data.Text as T
 import qualified Text.Megaparsec.Char.Lexer as L
-import Eikyo.Ast
 
 type Parser = Parsec Void Text
 
 pModule :: Parser Module
 pModule = do
-    void (symbol "module")
-    name <- identifier
-    decls <- many pDecl
-    return Module{..}
+  void (symbol "module")
+  name <- identifier
+  decls <- many pDecl
+  return Module {..}
 
 pDecl :: Parser TopDecl
 pDecl = lexeme pDataType
@@ -30,32 +33,30 @@ pDataType = L.indentBlock scn indentedBlock
     indentedBlock = do
       void (symbol "type")
       name <- identifier
-      return (L.IndentMany Nothing (return . (toDataType name)) pConstructor)
-    toDataType name constructors = DataType{..}
+      type_vars <- concat <$> optional (brackets (sepBy1 pType (symbol ",")))
+      return (L.IndentMany Nothing (return . (toDataType name type_vars)) pConstructor)
+    toDataType name type_vars constructors = DataType {..}
 
 pConstructor :: Parser Constructor
 pConstructor = do
-    name <- identifier
-    fields <- concat <$> optional pFields
-    return Constructor {..}
+  name <- identifier
+  fields <- concat <$> optional pFields
+  return Constructor {..}
 
 pFields :: Parser [Field]
-pFields = do
-    void (symbol "{")
-    fields <- sepBy1 pField (symbol ",")
-    void (symbol "}")
-    return fields
+pFields = braces $ sepBy1 pField (symbol ",")
+
 pField :: Parser Field
 pField = do
-    name <- identifier
-    void (symbol ":")
-    ty <- pType
-    return Field{..}
+  name <- identifier
+  void (symbol ":")
+  ty <- pType
+  return Field {..}
 
 pType :: Parser Type
-pType = do
-    name <- identifier
-    return (TyConst name)
+pType =
+  try (TyConstuctor <$> identifier <*> (brackets (sepBy1 pType (symbol ","))))
+    <|> try (TyVar <$> identifier)
 
 -- Tokens
 lineComment :: Parser ()
@@ -63,6 +64,7 @@ lineComment = L.skipLineComment "#"
 
 scn :: Parser ()
 scn = L.space space1 lineComment empty
+
 sc :: Parser ()
 sc = L.space hspace1 lineComment empty
 
@@ -71,6 +73,15 @@ lexeme = L.lexeme sc
 
 symbol :: Text -> Parser Text
 symbol = L.symbol sc
+
+parens :: Parser a -> Parser a
+parens = between (symbol "(") (symbol ")")
+
+brackets :: Parser a -> Parser a
+brackets = between (symbol "[") (symbol "]")
+
+braces :: Parser a -> Parser a
+braces = between (symbol "{") (symbol "}")
 
 integer :: Parser Integer
 integer = lexeme L.decimal
