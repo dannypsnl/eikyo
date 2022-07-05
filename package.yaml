@@ -32,6 +32,7 @@ default-extensions:
   - NamedFieldPuns
   - RecordWildCards
   - OverloadedStrings
+  - QuasiQuotes
 
 executables:
   eikyo-exe:

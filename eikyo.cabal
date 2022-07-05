@@ -37,6 +37,7 @@ library
       NamedFieldPuns
       RecordWildCards
       OverloadedStrings
+      QuasiQuotes
   build-depends:
       base >=4.7 && <5
     , megaparsec >=9.2
@@ -54,6 +55,7 @@ executable eikyo-exe
       NamedFieldPuns
       RecordWildCards
       OverloadedStrings
+      QuasiQuotes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -76,6 +78,7 @@ test-suite eikyo-test
       NamedFieldPuns
       RecordWildCards
       OverloadedStrings
+      QuasiQuotes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

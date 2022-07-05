@@ -8,47 +8,28 @@ import Text.Megaparsec
 
 spec :: Spec
 spec = describe "parse top level" $ do
+  context "module" $ do
+    it "empty one" $ do
+      let input = [str|module hello|]
+      parse pModule "" `shouldSucceedOn` input
   context "data type" $ do
     it "Bool" $ do
       let input =
-            "type Bool\n\
-            \  true   \n\
-            \  false    "
-      parse pDataType "" input
-        `shouldParse` ( DataType
-                          { name = "Bool",
-                            type_vars = [],
-                            constructors =
-                              [ Constructor {name = "true", fields = []},
-                                Constructor {name = "false", fields = []}
-                              ]
-                          }
-                      )
+            [str|type Bool
+                   true
+                   false|]
+      parse pDataType "" `shouldSucceedOn` input
     it "Nat" $ do
       let input =
-            "type Nat     \n\
-            \  zero       \n\
-            \  succ{n : Nat}"
-      parse pDataType "" input
-        `shouldParse` ( DataType
-                          { name = "Nat",
-                            type_vars = [],
-                            constructors =
-                              [ Constructor {name = "zero", fields = []},
-                                Constructor
-                                  { name = "succ",
-                                    fields =
-                                      [ Field {name = "n", ty = TyVar "Nat"}
-                                      ]
-                                  }
-                              ]
-                          }
-                      )
+            [str|type Nat
+                   zero
+                   succ{n : Nat}|]
+      parse pDataType "" `shouldSucceedOn` input
     it "List" $ do
       let input =
-            "type List[a]                  \n\
-            \  nil                         \n\
-            \  cons{head : a, tail : List[a]}"
+            [str|type List[a]
+                   nil
+                   cons{head : a, tail : List[a]}|]
       parse pDataType "" input
         `shouldParse` ( DataType
                           { name = "List",
