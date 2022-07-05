@@ -26,11 +26,12 @@ dependencies:
 
 library:
   source-dirs: src
-  default-extensions:
-    - DuplicateRecordFields
-    - NamedFieldPuns
-    - RecordWildCards
-    - OverloadedStrings
+
+default-extensions:
+  - DuplicateRecordFields
+  - NamedFieldPuns
+  - RecordWildCards
+  - OverloadedStrings
 
 executables:
   eikyo-exe:
@@ -47,11 +48,6 @@ tests:
   eikyo-test:
     main: Spec.hs
     source-dirs: test
-    default-extensions:
-      - DuplicateRecordFields
-      - NamedFieldPuns
-      - RecordWildCards
-      - OverloadedStrings
     ghc-options:
       - -threaded
       - -rtsopts
