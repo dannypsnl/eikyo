@@ -5,6 +5,7 @@ module Eikyo.Parser
     pDataType,
     pStruct,
     pFun,
+    pStatement,
   )
 where
 
@@ -48,7 +49,18 @@ pFun = L.indentBlock scn indentBlock
       return (L.IndentMany Nothing (return . \body -> Fun {..}) pStatement)
 
 pStatement :: Parser Statement
-pStatement = try (Expr <$> pExpr)
+pStatement =
+  (try)
+    pLet
+    <|> Expr <$> pExpr
+  where
+    pLet = do
+      void $ symbol "let"
+      name <- identifier
+      ty <- optional $ (symbol ":" *> pType)
+      void $ symbol "="
+      expr <- pExpr
+      return $ Let name ty expr
 
 pExpr = makeExprParser pTerm operatorTable <?> "expression"
 

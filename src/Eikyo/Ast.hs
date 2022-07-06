@@ -33,6 +33,7 @@ data TopDecl
 
 data Statement
   = Expr Expr
+  | Let Text (Maybe Type) Expr
   deriving (Show, Eq)
 
 data Expr
