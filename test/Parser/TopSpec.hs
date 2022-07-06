@@ -1,4 +1,4 @@
-module ParserSpec where
+module Parser.TopSpec where
 
 import Eikyo.Ast
 import Eikyo.Parser
@@ -46,8 +46,10 @@ spec = describe "parse top level" $ do
       let input =
             [str|fun foo() : int
                    foo()
+                   let x : int = 1
+                   let y = 2
                    foo()
-              |]
+            |]
       parse pFun "" `shouldSucceedOn` input
   context "data type" $ do
     it "Bool" $ do
@@ -71,18 +73,11 @@ spec = describe "parse top level" $ do
                    cons{head : a, tail : List[a]}
             |]
       parse pDataType "" input
-        `shouldParse` ( DataType
-                          { name = "List",
-                            type_vars = [TyVar "a"],
-                            constructors =
-                              [ Constructor {name = "nil", fields = []},
-                                Constructor
-                                  { name = "cons",
-                                    fields =
-                                      [ Bind {name = "head", ty = TyVar "a"},
-                                        Bind {name = "tail", ty = TyConstuctor "List" [TyVar "a"]}
-                                      ]
-                                  }
-                              ]
-                          }
-                      )
+        `shouldParse` DataType
+          { name = "List",
+            type_vars = [TyVar "a"],
+            constructors =
+              [ Constructor {name = "nil", fields = []},
+                Constructor {name = "cons", fields = [Bind {name = "head", ty = TyVar "a"}, Bind {name = "tail", ty = TyConstuctor "List" [TyVar "a"]}]}
+              ]
+          }

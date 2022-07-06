@@ -70,7 +70,8 @@ test-suite eikyo-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      ParserSpec
+      Parser.StatementSpec
+      Parser.TopSpec
       SpecHelper
       Paths_eikyo
   hs-source-dirs:
