@@ -35,6 +35,9 @@ data Expr =
     EInt Integer
   | EVar Text
   | EAdd Expr Expr
+  | ESub Expr Expr
+  | EMul Expr Expr
+  | EDiv Expr Expr
   deriving (Show, Eq)
 
 data Constructor = Constructor

@@ -9,6 +9,7 @@ module Eikyo.Parser
 where
 
 import Control.Monad
+import Control.Monad.Combinators.Expr
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Void
@@ -43,11 +44,35 @@ pFun = L.indentBlock scn indentBlock
 
 pStatement :: Parser Statement
 pStatement = try (ReturnExpr <$> pExpr)
-pExpr :: Parser Expr
-pExpr = lexeme $
-      try (EInt <$> integer)
-  <|> try (EVar <$> identifier)
-  -- <|> try (EAdd <$> pExpr <$ (symbol "+") $> <*> pExpr)
+
+pExpr = makeExprParser pTerm operatorTable <?> "expression"
+pTerm = choice
+  [ parens pExpr
+  , pVariable
+  , pInteger
+  ] <?> "term"
+  where
+    pInteger :: Parser Expr
+    pInteger = EInt <$> lexeme L.decimal <?> "integer"
+    pVariable :: Parser Expr
+    pVariable = EVar <$> identifier <?> "variable"
+
+operatorTable :: [[Operator Parser Expr]]
+operatorTable = 
+  [ [ binary "*" EMul
+    , binary "/" EDiv
+    ]
+  , [ binary "+" EAdd
+    , binary "-" ESub
+    ]
+  ]
+binary :: Text -> (Expr -> Expr -> Expr) -> Operator Parser Expr
+binary  name f = InfixL  (f <$ symbol name)
+
+prefix, postfix :: Text -> (Expr -> Expr) -> Operator Parser Expr
+prefix  name f = Prefix  (f <$ symbol name)
+postfix name f = Postfix (f <$ symbol name)
+
 
 pStruct :: Parser TopDecl
 pStruct = L.indentBlock scn indentedBlock
@@ -115,9 +140,6 @@ brackets = between (symbol "[") (symbol "]")
 
 braces :: Parser a -> Parser a
 braces = between (symbol "{") (symbol "}")
-
-integer :: Parser Integer
-integer = lexeme L.decimal
 
 identifier :: Parser Text
 identifier = T.pack <$> (lexeme . try) (some alphaNumChar) <?> "identifier"
