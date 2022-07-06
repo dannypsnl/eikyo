@@ -42,6 +42,13 @@ spec = describe "parse top level" $ do
                    x + y
             |]
       parse pFun "" `shouldSucceedOn` input
+    it "statement" $ do
+      let input =
+            [str|fun foo() : int
+                   foo()
+                   foo()
+              |]
+      parse pFun "" `shouldSucceedOn` input
   context "data type" $ do
     it "Bool" $ do
       let input =

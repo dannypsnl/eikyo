@@ -32,7 +32,7 @@ data TopDecl
   deriving (Show, Eq)
 
 data Statement
-  = ReturnExpr Expr
+  = Expr Expr
   deriving (Show, Eq)
 
 data Expr
@@ -42,6 +42,7 @@ data Expr
   | ESub Expr Expr
   | EMul Expr Expr
   | EDiv Expr Expr
+  | ECall Expr [Expr]
   deriving (Show, Eq)
 
 data Constructor = Constructor

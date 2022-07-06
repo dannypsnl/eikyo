@@ -48,15 +48,15 @@ pFun = L.indentBlock scn indentBlock
       return (L.IndentMany Nothing (return . \body -> Fun {..}) pStatement)
 
 pStatement :: Parser Statement
-pStatement = try (ReturnExpr <$> pExpr)
+pStatement = try (Expr <$> pExpr)
 
 pExpr = makeExprParser pTerm operatorTable <?> "expression"
 
 pTerm =
   choice
     [ parens pExpr,
-      pVariable,
-      pInteger
+      pInteger,
+      pVariable
     ]
     <?> "term"
   where
@@ -72,8 +72,14 @@ operatorTable =
     ],
     [ binary "+" EAdd,
       binary "-" ESub
-    ]
+    ],
+    [Postfix pFuncCall]
   ]
+
+pFuncCall :: Parser (Expr -> Expr)
+pFuncCall = do
+  args <- parens $ sepBy pExpr (symbol ",")
+  return $ \funcExpr -> ECall funcExpr args
 
 binary :: Text -> (Expr -> Expr -> Expr) -> Operator Parser Expr
 binary name f = InfixL (f <$ symbol name)
