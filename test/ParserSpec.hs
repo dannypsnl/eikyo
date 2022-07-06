@@ -22,6 +22,9 @@ spec = describe "parse top level" $ do
             
             struct Nice
               try : Bool
+
+            fun add(x : int, y : int) : int
+              x + y
             |]
       parse pModule "" `shouldSucceedOn` input
   context "structure" $ do

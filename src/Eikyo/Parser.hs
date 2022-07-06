@@ -28,7 +28,10 @@ pModule = do
   return Module {..}
 
 pDecl :: Parser TopDecl
-pDecl = lexeme $ (try pDataType <|> try pStruct)
+pDecl = (lexeme . try) $
+  (pDataType
+  <|> pStruct
+  <|> pFun)
 
 pFun :: Parser TopDecl
 pFun = L.indentBlock scn indentBlock
