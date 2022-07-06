@@ -2,7 +2,9 @@ module Eikyo.Ast
   ( Module (..),
     TopDecl (..),
     Constructor (..),
-    Field (..),
+    Statement(..),
+    Expr(..),
+    Bind (..),
     Type (..),
   )
 where
@@ -15,20 +17,33 @@ data Module = Module
   }
   deriving (Show, Eq)
 
-data TopDecl = DataType
-  { name :: Text,
-    type_vars :: [Type],
-    constructors :: [Constructor]
-  }
+data TopDecl = 
+    DataType{ name :: Text,
+      type_vars :: [Type],
+      constructors :: [Constructor]}
+  | Fun {
+    name :: Text,
+    args :: [Bind],
+    return_ty :: Type,
+    body :: [Statement]}
+  deriving (Show, Eq)
+
+data Statement =
+  ReturnExpr Expr
+  deriving (Show, Eq)
+data Expr =
+    EInt Integer
+  | EVar Text
+  | EAdd Expr Expr
   deriving (Show, Eq)
 
 data Constructor = Constructor
   { name :: Text,
-    fields :: [Field]
+    fields :: [Bind]
   }
   deriving (Show, Eq)
 
-data Field = Field
+data Bind = Bind
   { name :: Text,
     ty :: Type
   }

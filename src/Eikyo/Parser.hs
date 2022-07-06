@@ -4,6 +4,7 @@ module Eikyo.Parser
   ( pModule,
     pDataType,
     pStruct,
+    pFun,
   )
 where
 
@@ -28,6 +29,26 @@ pModule = do
 pDecl :: Parser TopDecl
 pDecl = lexeme $ (try pDataType <|> try pStruct)
 
+pFun :: Parser TopDecl
+pFun = L.indentBlock scn indentBlock
+  where
+    pArg = pBind
+    indentBlock = do
+      void (symbol "fun")
+      name <- identifier
+      args <- parens (sepBy pArg (symbol ","))
+      void (symbol ":")
+      return_ty <- pType
+      return (L.IndentMany Nothing (return . \body -> Fun{..}) pStatement)
+
+pStatement :: Parser Statement
+pStatement = try (ReturnExpr <$> pExpr)
+pExpr :: Parser Expr
+pExpr = lexeme $
+      try (EInt <$> integer)
+  <|> try (EVar <$> identifier)
+  -- <|> try (EAdd <$> pExpr <$ (symbol "+") $> <*> pExpr)
+
 pStruct :: Parser TopDecl
 pStruct = L.indentBlock scn indentedBlock
   where
@@ -35,7 +56,7 @@ pStruct = L.indentBlock scn indentedBlock
       void (symbol "struct")
       name <- identifier
       type_vars <- concat <$> optional (brackets (sepBy1 pType (symbol ",")))
-      return (L.IndentMany Nothing (return . (toDataType name type_vars)) pField)
+      return (L.IndentMany Nothing (return . (toDataType name type_vars)) pBind)
     toDataType name type_vars fields =
       DataType {constructors = [Constructor {..}], ..}
 
@@ -55,15 +76,15 @@ pConstructor = do
   fields <- concat <$> optional pFields
   return Constructor {..}
 
-pFields :: Parser [Field]
-pFields = braces $ sepBy1 pField (symbol ",")
+pFields :: Parser [Bind]
+pFields = braces $ sepBy1 pBind (symbol ",")
 
-pField :: Parser Field
-pField = do
+pBind :: Parser Bind
+pBind = do
   name <- identifier
   void (symbol ":")
   ty <- pType
-  return Field {..}
+  return Bind {..}
 
 pType :: Parser Type
 pType =

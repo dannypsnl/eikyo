@@ -32,6 +32,13 @@ spec = describe "parse top level" $ do
                    age: Int
             |]
       parse pStruct "" `shouldSucceedOn` input
+  context "fun" $ do
+    it "simply typed" $ do
+      let input =
+            [str|fun add(x : int, y : int) : int
+                   x + y
+            |]
+      parse pFun "" `shouldSucceedOn` input
   context "data type" $ do
     it "Bool" $ do
       let input =
@@ -62,8 +69,8 @@ spec = describe "parse top level" $ do
                                 Constructor
                                   { name = "cons",
                                     fields =
-                                      [ Field {name = "head", ty = TyVar "a"},
-                                        Field {name = "tail", ty = TyConstuctor "List" [TyVar "a"]}
+                                      [ Bind {name = "head", ty = TyVar "a"},
+                                        Bind {name = "tail", ty = TyConstuctor "List" [TyVar "a"]}
                                       ]
                                   }
                               ]
