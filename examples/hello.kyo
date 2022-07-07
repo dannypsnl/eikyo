@@ -1,0 +1,4 @@
+module hello
+
+fun main() : ()
+  println(1)

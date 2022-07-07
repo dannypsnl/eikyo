@@ -19,6 +19,5 @@ main = do
         Right mod -> do
           putStrLn "Parsing done..."
           compile mod
-          putStrLn "Compile done..."
     Build -> do
       putStrLn "Building"
