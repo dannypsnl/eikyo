@@ -45,6 +45,7 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - eikyo
+      - cmdargs
 
 tests:
   eikyo-test:
