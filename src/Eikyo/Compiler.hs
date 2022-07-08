@@ -1,9 +1,9 @@
-module Eikyo.Compiler (compile) where
+module Eikyo.Compiler (compileModule) where
 
 import Eikyo.Ast
 
-compile :: Module -> IO ()
-compile mod = do
+compileModule :: Module -> IO ()
+compileModule mod = do
   putStrLn "Compiling..."
   putStrLn $ show $ mod
   putStrLn "Compiled."

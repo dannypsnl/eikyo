@@ -1,8 +1,12 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module Eikyo.Command (mode, Eikyo (..)) where
+module Eikyo.Command (mode, dispatchCommands) where
 
+import qualified Data.Text as T
+import Eikyo.Compiler
+import Eikyo.Parser
 import System.Console.CmdArgs
+import Text.Megaparsec
 
 data Eikyo
   = Compile {file :: FilePath}
@@ -19,3 +23,17 @@ mode =
       &= help "Eikyo compiler"
       &= program "eikyo"
       &= summary "Eikyo v0.0\n"
+
+dispatchCommands :: Eikyo -> IO ()
+dispatchCommands eikyo_mode = do
+  case eikyo_mode of
+    Compile {file = app_file} -> do
+      putStrLn $ "Compiling " ++ app_file ++ "..."
+      contents <- T.pack <$> readFile app_file
+      case runParser pModule app_file contents of
+        Left bundle -> putStr (errorBundlePretty bundle)
+        Right mod -> do
+          putStrLn "Parsing done..."
+          compileModule mod
+    Build -> do
+      putStrLn "Building"
