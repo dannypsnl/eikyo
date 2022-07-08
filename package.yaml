@@ -21,10 +21,12 @@ description: Please see the README on GitHub at <https://github.com/dannypsnl/ei
 
 dependencies:
   - base >= 4.7 && < 5
-  - megaparsec >= 9.2
-  - text >= 1.2
-  - parser-combinators >= 1.3
+  # command line arg parsing
   - cmdargs >= 0.10
+  # language parser
+  - text >= 1.2
+  - megaparsec >= 9.2
+  - parser-combinators >= 1.3
 
 library:
   source-dirs: src
