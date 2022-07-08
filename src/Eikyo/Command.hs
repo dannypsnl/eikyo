@@ -28,7 +28,7 @@ dispatchCommands :: Eikyo -> IO ()
 dispatchCommands eikyo_mode = do
   case eikyo_mode of
     Compile {file = app_file} -> do
-      putStrLn $ "Compiling " ++ app_file ++ "..."
+      putStrLn $ "Parsing " ++ app_file ++ "..."
       contents <- T.pack <$> readFile app_file
       case runParser pModule app_file contents of
         Left bundle -> putStr (errorBundlePretty bundle)
