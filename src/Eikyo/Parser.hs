@@ -25,6 +25,7 @@ pModule :: Parser Module
 pModule = do
   void (symbol "module")
   name <- identifier
+  scn
   decls <- many pDecl
   return Module {..}
 
@@ -168,4 +169,12 @@ braces :: Parser a -> Parser a
 braces = between (symbol "{") (symbol "}")
 
 identifier :: Parser Text
-identifier = T.pack <$> (lexeme . try) (some alphaNumChar) <?> "identifier"
+identifier =
+  lexeme
+    ( try (symbol $ T.pack "()")
+        <|> (T.pack <$> try ((:) <$> startChar <*> some followChar))
+    )
+    <?> "identifier"
+  where
+    startChar = letterChar <|> symbolChar
+    followChar = startChar <|> digitChar <|> (char '-')
