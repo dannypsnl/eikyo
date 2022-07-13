@@ -1,4 +1,4 @@
-module Eikyo.Compiler (compileModule) where
+module Eikyo.Backend.Compiler (compileModule) where
 
 import Eikyo.Ast
 
