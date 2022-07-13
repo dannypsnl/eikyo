@@ -30,7 +30,6 @@ library
       Eikyo.Backend.Interpreter
       Eikyo.Command
       Eikyo.Parser
-      Lib
   other-modules:
       Paths_eikyo
   hs-source-dirs:
