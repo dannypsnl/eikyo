@@ -6,6 +6,7 @@ module Eikyo.Ast
     Expr (..),
     Bind (..),
     Type (..),
+    Mark (..),
   )
 where
 
@@ -62,5 +63,17 @@ data Type
   = TyVar Text
   | TyConstuctor Text [Type]
   | TyFun [Type] Type
-  | TyTuple [Type]
+  | TyWith Type [Mark]
+  deriving (Show, Eq)
+
+data Mark
+  = Requires Text
+  | -- +
+    Ensures Text
+  | -- ?+
+    EnsuresTry Text
+  | -- -
+    Takes Text
+  | -- ?-
+    TakesTry Text
   deriving (Show, Eq)

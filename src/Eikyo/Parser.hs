@@ -18,6 +18,7 @@ import Eikyo.Ast
 import Text.Megaparsec hiding (State)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Error
 
 type Parser = Parsec Void Text
 
@@ -141,7 +142,32 @@ pBind = do
 pType :: Parser Type
 pType =
   try (TyConstuctor <$> identifier <*> (brackets (sepBy1 pType (symbol ","))))
+    <|> try (TyWith <$> pType <*> (braces (sepBy1 pMark (symbol ","))))
     <|> try (TyVar <$> identifier)
+
+pMark :: Parser Mark
+pMark =
+  try
+    ( do
+        symbol "+"
+        Ensures <$> identifier
+    )
+    <|> try
+      ( do
+          symbol "?+"
+          EnsuresTry <$> identifier
+      )
+    <|> try
+      ( do
+          symbol "-"
+          Takes <$> identifier
+      )
+    <|> try
+      ( do
+          symbol "?-"
+          TakesTry <$> identifier
+      )
+    <|> try (Requires <$> identifier)
 
 -- Tokens
 lineComment :: Parser ()
