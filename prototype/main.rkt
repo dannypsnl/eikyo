@@ -4,29 +4,19 @@
          λ
          define
          ; bulitin types
-         (type-out →)
-         number string)
+         (all-from-out "types.rkt")
+         ; primitives
+         +)
+(require "types.rkt")
 
 (module reader syntax/module-reader eikyo)
 
-; (→ typ/param* ... typ/return)
-(define-type-constructor →
-  #:arity >= 1
-  #:arg-variances
-  (λ (stx)
-    (syntax-parse stx
-      [(_ typ/param* ... typ/return)
-       (append
-        (stx-map (λ _ contravariant) #'[typ/param* ...])
-        (list covariant))])))
+(define-primop + : (→ number number number))
 
-(define-typed-syntax define
-  #:datum-literals (:)
-  [(_ x:id : ty:type e)
-   ≫
-   [⊢ e ≫ e- ⇐ ty]
-   ---------------
-   [≻ (define- x e-)]])
+(define-syntax define
+  (syntax-parser
+    [(_ x:id : ty e)
+     #'(define-typed-variable x e ⇐ ty)]))
 
 (define-typed-syntax λ
   #:datum-literals (:)
@@ -55,8 +45,6 @@
   [⊢ (#%app- e-fun- e-args- ...) ⇒ return-typ])
 
 ;;; extension
-(define-base-types number string)
-
 (define-typed-syntax #%datum
   [(_ . n:number) ≫
    ---------
