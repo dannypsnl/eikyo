@@ -70,7 +70,7 @@ All mark operations are
 
 ### Invite
 
-We invite developers to participate, please contact (dannypsnl@gmail.com) if you are interested. A description of the semantics and syntax is developing. Due to the semantics and development content, there may be many unclear or undefined matters in the issue, and you are welcome to provide valuable comments.
+We invite developers to participate, please contact (dannypsnl@gmail.com) if you have any questions. A description of the semantics and syntax is developing. Due to the semantics and development content, there may be many unclear or undefined matters in the issue, and you are welcome to provide valuable comments.
 
 Developers are expected to be proficient in FP(e.g. Haskell, Racket, SML) and able to develop independently in at least one of the following situations
 
