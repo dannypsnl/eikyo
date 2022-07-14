@@ -1,5 +1,6 @@
 #lang racket
-(require syntax/parse/define)
+(require syntax/parse/define
+         (for-syntax syntax/stx))
 
 (begin-for-syntax
   (define $env (make-hash))
@@ -15,27 +16,65 @@
   (struct mark:- (name))
   (struct mark:?- (name))
 
-  (define (with-mark ty-stx mark*-stx)
-    (TyWith (parse-ty ty-stx) (parse-mark mark*-stx)))
-  (define (parse-ty ty-stx)
+  (define-syntax-class mark
+    #:datum-literals (+ - ?+ ?-)
+    (pattern (+ name:id))
+    (pattern (- name:id))
+    (pattern (?+ name:id))
+    (pattern (?- name:id))
+    (pattern name:id))
+
+  (define-syntax-class fun-type
+    #:datum-literals (-> : fun)
+    (pattern (fun [name:id : ty:type] ... -> ret:type)))
+
+  (define-syntax-class type
+    #:datum-literals (~ -> fun)
+    (pattern (~ ty:type m*:mark ...))
+    (pattern ty:fun-type)
+    (pattern name:id))
+
+  (define (fun? ty-stx)
     (syntax-parse ty-stx
-      #:datum-literals (int)
-      [int <int>]
-      [else (error 'skip)]))
-  (define (parse-mark m-stx)
-    (mark:unit 'd)))
+      [ty:fun-type #t]
+      [else #f]))
+  )
 
 (define-syntax (LET stx)
   (syntax-parse stx
-    #:datum-literals (:)
-    [(_ n:id : ty e:expr)
-     (hash-set! $env (syntax->datum #'n) (parse-ty #'ty))
+    #:datum-literals (: =)
+    [(_ name:id : ty:type = e:expr)
+     (hash-set! $env (syntax->datum #'name) #'ty)
      (quasisyntax/loc stx
-       (define n e))]
-    [(_ n:id : ty mark ... e:expr)
-     (hash-set! $env (syntax->datum #'n) (with-mark #'ty #'(mark ...)))
-     (quasisyntax/loc stx
-       (define n e))]))
+       (define name e))]))
 
-(LET a : int 1)
+(define-syntax (FUN stx)
+  (syntax-parse stx
+    #:datum-literals (:)
+    [(_ (name:id [params:id : param-tys:type] ...) : ret:type
+        body:expr ...)
+     (hash-set! $env (syntax->datum #'name) #'(fun [params : param-tys] ... -> ret))
+     (quasisyntax/loc stx
+       (define (name params ...)
+         body ...))]))
+
+(define-syntax (APP stx)
+  (syntax-parse stx
+    [(_ fun:expr args:expr ...)
+     (unless (fun? (hash-ref $env (syntax->datum #'fun)))
+       (raise-syntax-error 'non-fun
+                           "call on non function"
+                           #'fun))
+     (println (stx-map (λ (a) (hash-ref $env (syntax->datum a))) #'(args ...)))
+     (quasisyntax/loc stx
+       (fun args ...))]))
+
+(LET a : int = 1)
 a
+(LET b : (~ int (+ owned)) = 2)
+b
+
+(FUN (use [n : (~ int (- owned))]) : void
+     (println use)
+     (void))
+(APP use b)
