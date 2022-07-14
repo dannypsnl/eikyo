@@ -55,10 +55,10 @@ Thus, we can make sure the mark is correct, because the runtime will block inval
 
 All mark operations are
 
-- +
-- -
-- ?+
-- ?-
+- `+`
+- `-`
+- `?+`
+- `?-`
 - require, when we didn't write any operation with mark, it requires the mark exists.
 
 ### Plan
