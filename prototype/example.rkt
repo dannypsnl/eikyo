@@ -1,3 +1,4 @@
 #lang eikyo
 
-1
+(define x : number 1)
+x

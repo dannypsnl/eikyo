@@ -1,5 +1,10 @@
-#lang turnstile+
-(provide (type-out →) λ #%app #%module-begin #%top-interaction require #%datum
+#lang turnstile+/base
+(provide #%module-begin #%top-interaction #%app #%datum
+         require
+         λ
+         define
+         ; bulitin types
+         (type-out →)
          number string)
 
 (module reader syntax/module-reader eikyo)
@@ -14,6 +19,14 @@
        (append
         (stx-map (λ _ contravariant) #'[typ/param* ...])
         (list covariant))])))
+
+(define-typed-syntax define
+  #:datum-literals (:)
+  [(_ x:id : ty:type e)
+   ≫
+   [⊢ e ≫ e- ⇐ ty]
+   ---------------
+   [≻ (define- x e-)]])
 
 (define-typed-syntax λ
   #:datum-literals (:)
