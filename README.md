@@ -1,5 +1,66 @@
 # eikyo(影响)
 
+eikyo is an experimental programming language, try to explore a mark system with usual polymorphic type, I will try to explain the idea informally in the following section.
+
+First of all, polymorphic type means parameteric polymorphism here. For each type, they can have a set of marks. For example, `int positive` is a type `int` with a mark `positive`. A mark can be operated, for example, the following code shows a ownership system.
+
+```kt
+fun use(t : T -owned) : ()
+  # ...
+
+fun main() : ()
+  let t : T +owned = # ...
+  use(t)
+  use(t) # error: t is not owned
+```
+
+The reason that works, is because `-mark` is saying I expected the argument has that mark, and will don't have that mark at caller environment after position get evaluated. This is important, because we might also write the following.
+
+```kt
+fun use1(a : A -owned) : B
+  # ...
+
+fun use2(a : A -owned, b : B -owned) : ()
+  # ...
+
+fun main() : ()
+  let t : T +owned = # ...
+  use2(t, use1(t)) # error: t is not owned at `use1`
+```
+
+This example shows the type of `t` get affected exactly at the position `use2(t, ...)` evaluated. Another part is `+owned`, the semantic of this is adding mark to the type if don't have.
+
+A mark can associate with a contract, for example, we can have below code.
+
+```kt
+contract positive(n : int) : bool
+  n > 0
+
+fun main() : ()
+  let a : int +positive = 1
+```
+
+The code will be expanded to
+
+```kt
+fun positive(n : int) : bool
+  n > 0
+
+fun main() : ()
+  let a : int = 1
+  @assert a.positive()
+```
+
+Thus, we can make sure the mark is correct, because the runtime will block invalid code.
+
+All mark operations are
+
+- +
+- -
+- ?+
+- ?-
+- require, when we didn't write any operation with mark, it requires the mark exists.
+
 ### Plan
 
 1. A full compiler from source code to generated code, now having some problems
