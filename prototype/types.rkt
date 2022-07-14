@@ -14,3 +14,8 @@
         (list covariant))])))
 
 (define-base-types number string)
+
+(module+ test
+  (require rackunit/turnstile)
+
+  (check-type number :: #%type))
