@@ -1,12 +1,18 @@
 #lang turnstile+/base
 (provide λ
          define)
-(require "types.rkt")
+(require "types.rkt"
+         "eikyo.rkt")
 
-(define-syntax define
-  (syntax-parser
-    [(_ x:id : ty e)
-     #'(define-typed-variable x e ⇐ ty)]))
+(define-typed-syntax define
+  #:datum-literals (:)
+  [(_ x:id : ty:type e) ≫ [⊢ e ≫ e- ⇒ τ]
+   -------------------------------------
+   [≻ (define-typed-variable x e- ⇒
+        #,(eikyo #'ty #'τ))]]
+  [(_ x:id e) ≫ [⊢ e ≫ e- ⇒ τ]
+   -------------------------------------
+   [≻ (define-typed-variable x e- ⇒ τ)]])
 
 (define-typed-syntax λ
   #:datum-literals (:)
