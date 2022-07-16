@@ -74,12 +74,13 @@ We invite developers to participate, please contact (dannypsnl@gmail.com) if you
 
 Developers are expected to be proficient in FP(e.g. Haskell, Racket, SML) and able to develop independently in at least one of the following situations
 
-1. parser: we use megaparsec to handle indented grammars
+1. parser: we use megaparsec, a parser combinator
 2. type system: based on Hindley-Milner, with additional "mark" system
 3. macro system: macro based on syntax tree modification
 4. llvm: some understanding of coding higher-order abstractions with llvm
 5. package system: good experience in implementation, able to design or maintain system for package upload, installation, and compilation
 6. standard library: interested in learning new languages and writing high-quality programs
+7. prototype: we use [turnstile+](https://docs.racket-lang.org/turnstile)
 
 Hopefully this note has really given you an idea of what you can contribute.
 
