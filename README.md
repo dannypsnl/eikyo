@@ -1,8 +1,8 @@
 # eikyo(影响)
 
-eikyo is an experimental programming language, try to explore a mark system with usual polymorphic type, I will try to explain the idea informally in the following section.
+eikyo is an experimental programming language, exploring a mark system with usual polymorphic type, I will try to explain the idea informally in the following section.
 
-First of all, polymorphic type means parameteric polymorphism here. For each type, they can have a set of marks. For example, `int positive` is a type `int` with a mark `positive`. A mark can be operated, for example, the following code shows a ownership system.
+Polymorphic type means parameteric polymorphism here. For each type, they can have a set of marks. For example, `int positive` is a type `int` with a mark `positive`. A mark can be operated, for example, the following code shows a ownership system.
 
 ```kt
 fun use(t : T -owned) : ()
@@ -14,7 +14,7 @@ fun main() : ()
   use(t) # error: t is not owned
 ```
 
-The reason that works, is because `-mark` is saying I expected the argument has that mark, and will don't have that mark at caller environment after position get evaluated. This is important, because we might also write the following.
+The reason that works, is because `-mark` is saying that I expected the argument has that mark, and will don't have that mark at caller environment after position get evaluated. This is important, because we might also write the following.
 
 ```kt
 fun use1(a : A -owned) : B
@@ -64,9 +64,7 @@ All mark operations are
 ### Plan
 
 1. A full compiler from source code to generated code, now having some problems
-   - Haskell on m1(my computer) is unusable
    - llvm-hs has problem with brew installed llvm@12
-2. Build s-expr version in racket as the prototype for digging
 
 ### Invite
 
@@ -80,9 +78,8 @@ Developers are expected to be proficient in FP(e.g. Haskell, Racket, SML) and ab
 4. llvm: some understanding of coding higher-order abstractions with llvm
 5. package system: good experience in implementation, able to design or maintain system for package upload, installation, and compilation
 6. standard library: interested in learning new languages and writing high-quality programs
-7. prototype: we use [turnstile+](https://docs.racket-lang.org/turnstile)
 
-Hopefully this note has really given you an idea of what you can contribute.
+Hope this note has really given you an idea of what you can contribute.
 
 The principle of an issue is that it can be completed within a week (bug related is not limited to this)
 If it cannot be completed within this time, which means that it is not clearly achievable, it will be referred to https://github.com/dannypsnl/eikyo/discussions. It's okay to open the wrong issue, the maintainer will let you know and move the content to the relevant location for you.
